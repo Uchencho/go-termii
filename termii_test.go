@@ -3,7 +3,7 @@ package gotermii_test
 import (
 	"bytes"
 	"encoding/json"
-	gotermii "go-termii"
+	termii "go-termii"
 	"io"
 	"io/ioutil"
 	"log"
@@ -25,10 +25,10 @@ func fileToStruct(filepath string, s interface{}) io.Reader {
 func TestSendTokenSuccess(t *testing.T) {
 	os.Setenv("TERMII_API_KEY", "test-API")
 	var (
-		expectedTokenRequest gotermii.SendTokenRequest
-		receivedBody         gotermii.SendTokenRequest
-		req                  gotermii.SendTokenRequest
-		expectedResponse     gotermii.SendTokenResponse
+		expectedTokenRequest termii.SendTokenRequest
+		receivedBody         termii.SendTokenRequest
+		req                  termii.SendTokenRequest
+		expectedResponse     termii.SendTokenResponse
 	)
 
 	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -43,7 +43,7 @@ func TestSendTokenSuccess(t *testing.T) {
 			assert.Equal(t, expectedTokenRequest, receivedBody)
 		})
 
-		var resp gotermii.SendTokenResponse
+		var resp termii.SendTokenResponse
 		fileToStruct(filepath.Join("testdata", "send_token_response.json"), &resp)
 
 		w.WriteHeader(http.StatusOK)
@@ -53,9 +53,9 @@ func TestSendTokenSuccess(t *testing.T) {
 	os.Setenv("TERMII_URL", termiiService.URL)
 	fileToStruct(filepath.Join("testdata", "send_token_request.json"), &req)
 
-	c := gotermii.NewClient()
+	c := termii.NewClient()
 
-	resp, err := gotermii.SendToken(c, req)
+	resp, err := c.SendToken(req)
 	t.Run("No error is returned", func(t *testing.T) {
 		assert.NoError(t, err)
 	})
