@@ -60,6 +60,10 @@ func (s *Client) makeRequest(method, rURL string, reqBody interface{}, resp inte
 		return errors.Wrap(err, "client - failed to execute request")
 	}
 
+	if res.StatusCode != http.StatusOK && res.StatusCode != 204 {
+		return errors.Errorf("invalid status code received, expected 200/204, got %v", res.StatusCode)
+	}
+
 	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
 		return errors.Wrap(err, "unable to unmarshal request body")
 	}

@@ -1,0 +1,13 @@
+{
+  "api_key": "test-API",
+  "message_type": "NUMERIC",
+  "to": "2348109077743",
+  "from": "Uchencho inc",
+  "channel": "dnd",
+  "pin_attempts": 10,
+  "pin_time_to_live": 5,
+  "pin_length": 6,
+  "pin_placeholder": "< 1234 >",
+  "message_text": "Your pin is < 1234 >",
+  "pin_type": "NUMERIC"
+}

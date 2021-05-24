@@ -32,13 +32,13 @@ type SendTokenResponse struct {
 type SendTokenFunc func(req SendTokenRequest) (SendTokenResponse, error)
 
 // SendToken sends a token request
-func (c Client) SendToken() SendTokenFunc {
+func SendToken(c Client) SendTokenFunc {
 	return func(req SendTokenRequest) (SendTokenResponse, error) {
 		req.APIKey = c.config.APIKey
 		rURL := "api/sms/otp/send"
 
 		var tokenResponse SendTokenResponse
-		if err := c.makeRequest(http.MethodPost, rURL, req, tokenResponse); err != nil {
+		if err := c.makeRequest(http.MethodPost, rURL, req, &tokenResponse); err != nil {
 			return SendTokenResponse{}, errors.Wrap(err, "error in making request to send otp token")
 		}
 		return tokenResponse, nil
