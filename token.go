@@ -29,7 +29,7 @@ type SendTokenResponse struct {
 }
 
 // SendToken sends a token request
-func SendToken(c Client, req SendTokenRequest) (SendTokenResponse, error) {
+func (c Client) SendToken(req SendTokenRequest) (SendTokenResponse, error) {
 	req.APIKey = c.config.APIKey
 	rURL := "api/sms/otp/send"
 
