@@ -55,8 +55,7 @@ func TestSendTokenSuccess(t *testing.T) {
 
 	c := gotermii.NewClient()
 
-	sendToken := gotermii.SendToken(c)
-	resp, err := sendToken(req)
+	resp, err := gotermii.SendToken(c, req)
 	t.Run("No error is returned", func(t *testing.T) {
 		assert.NoError(t, err)
 	})

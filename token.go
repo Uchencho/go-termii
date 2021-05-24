@@ -28,19 +28,14 @@ type SendTokenResponse struct {
 	SmsStatus string `json:"smsStatus"`
 }
 
-// SendTokenFunc provides the functionality of sending a token request
-type SendTokenFunc func(req SendTokenRequest) (SendTokenResponse, error)
-
 // SendToken sends a token request
-func SendToken(c Client) SendTokenFunc {
-	return func(req SendTokenRequest) (SendTokenResponse, error) {
-		req.APIKey = c.config.APIKey
-		rURL := "api/sms/otp/send"
+func SendToken(c Client, req SendTokenRequest) (SendTokenResponse, error) {
+	req.APIKey = c.config.APIKey
+	rURL := "api/sms/otp/send"
 
-		var tokenResponse SendTokenResponse
-		if err := c.makeRequest(http.MethodPost, rURL, req, &tokenResponse); err != nil {
-			return SendTokenResponse{}, errors.Wrap(err, "error in making request to send otp token")
-		}
-		return tokenResponse, nil
+	var tokenResponse SendTokenResponse
+	if err := c.makeRequest(http.MethodPost, rURL, req, &tokenResponse); err != nil {
+		return SendTokenResponse{}, errors.Wrap(err, "error in making request to send otp token")
 	}
+	return tokenResponse, nil
 }
