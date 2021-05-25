@@ -65,3 +65,47 @@ func TestSendTokenSuccess(t *testing.T) {
 		assert.Equal(t, expectedResponse, resp)
 	})
 }
+
+func TestVerifyTokenSuccess(t *testing.T) {
+	os.Setenv("TERMII_API_KEY", "test-API")
+	var (
+		expectedTokenRequest termii.VerifyTokenRequest
+		receivedBody         termii.VerifyTokenRequest
+		req                  termii.VerifyTokenRequest
+		expectedResponse     termii.VerifyTokenResponse
+	)
+
+	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if err := json.NewDecoder(req.Body).Decode(&receivedBody); err != nil {
+			log.Printf("error in unmarshalling %+v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		t.Run("Request is as expected", func(t *testing.T) {
+			fileToStruct(filepath.Join("testdata", "verify_token_request.json"), &expectedTokenRequest)
+			assert.Equal(t, expectedTokenRequest, receivedBody)
+		})
+
+		var resp termii.VerifyTokenResponse
+		fileToStruct(filepath.Join("testdata", "verify_token_response.json"), &resp)
+
+		w.WriteHeader(http.StatusOK)
+		bb, _ := json.Marshal(resp)
+		w.Write(bb)
+	}))
+	os.Setenv("TERMII_URL", termiiService.URL)
+	fileToStruct(filepath.Join("testdata", "verify_token_request.json"), &req)
+
+	c := termii.NewClient()
+
+	resp, err := c.VerifyToken(req)
+	t.Run("No error is returned", func(t *testing.T) {
+		assert.NoError(t, err)
+	})
+
+	t.Run("Response is as expected", func(t *testing.T) {
+		fileToStruct(filepath.Join("testdata", "verify_token_response.json"), &expectedResponse)
+		assert.Equal(t, expectedResponse, resp)
+	})
+}
