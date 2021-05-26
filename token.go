@@ -28,6 +28,16 @@ type VerifyTokenRequest struct {
 	Pin    string `json:"pin"`
 }
 
+// GenerateTokenRequest is a representation of a generate in app token request
+type GenerateTokenRequest struct {
+	APIKey        string `json:"api_key"`
+	PinType       string `json:"pin_type"`
+	PhoneNumber   string `json:"phone_number"`
+	PinAttempts   int    `json:"pin_attempts"`
+	PinTimeToLive int    `json:"pin_time_to_live"`
+	PinLength     int    `json:"pin_length"`
+}
+
 // VerifyTokenResponse is a representation of a verify token response
 type VerifyTokenResponse struct {
 	PinID    string `json:"pinId"`
@@ -40,6 +50,20 @@ type SendTokenResponse struct {
 	PinID     string `json:"pinId"`
 	To        string `json:"to"`
 	SmsStatus string `json:"smsStatus"`
+}
+
+// InAppTokenDataResponse is a representation of the data field returned
+type InAppTokenDataResponse struct {
+	PinID            string `json:"pin_id"`
+	Otp              string `json:"otp"`
+	PhoneNumber      string `json:"phone_number"`
+	PhoneNumberOther string `json:"phone_number_other"`
+}
+
+// GenerateTokenResponse is a representation of a generate token response
+type GenerateTokenResponse struct {
+	Status string                 `json:"status"`
+	Data   InAppTokenDataResponse `json:"data"`
 }
 
 // SendToken sends a token request
@@ -62,6 +86,18 @@ func (c Client) VerifyToken(req VerifyTokenRequest) (VerifyTokenResponse, error)
 	var tokenResponse VerifyTokenResponse
 	if err := c.makeRequest(http.MethodPost, rURL, req, &tokenResponse); err != nil {
 		return VerifyTokenResponse{}, errors.Wrap(err, "error in making request to verify otp token")
+	}
+	return tokenResponse, nil
+}
+
+// VerifyToken sends a request to verify token
+func (c Client) GetInAppToken(req GenerateTokenRequest) (GenerateTokenResponse, error) {
+	req.APIKey = c.config.APIKey
+	rURL := "api/sms/otp/generate"
+
+	var tokenResponse GenerateTokenResponse
+	if err := c.makeRequest(http.MethodPost, rURL, req, &tokenResponse); err != nil {
+		return GenerateTokenResponse{}, errors.Wrap(err, "error in making request to generate token")
 	}
 	return tokenResponse, nil
 }
