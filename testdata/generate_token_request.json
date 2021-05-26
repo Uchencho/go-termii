@@ -1,0 +1,8 @@
+{
+  "api_key": "test-API",
+  "pin_type": "NUMERIC",
+  "phone_number": "2348109477743",
+  "pin_attempts": 3,
+  "pin_time_to_live": 0,
+  "pin_length": 6
+}
