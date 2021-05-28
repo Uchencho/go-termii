@@ -3,6 +3,7 @@ package gotermii_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	termii "go-termii"
 	"io"
 	"io/ioutil"
@@ -41,6 +42,12 @@ func TestSendTokenSuccess(t *testing.T) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/send"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
 
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "send_token_request.json"), &expectedTokenRequest)
@@ -86,6 +93,12 @@ func TestVerifyTokenSuccess(t *testing.T) {
 			return
 		}
 
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/verify"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "verify_token_request.json"), &expectedTokenRequest)
 			assert.Equal(t, expectedTokenRequest, receivedBody)
@@ -130,6 +143,12 @@ func TestGetInAppTokenSuccess(t *testing.T) {
 			return
 		}
 
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/generate"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "generate_token_request.json"), &expectedTokenRequest)
 			assert.Equal(t, expectedTokenRequest, receivedBody)
@@ -154,6 +173,92 @@ func TestGetInAppTokenSuccess(t *testing.T) {
 
 	t.Run("Response is as expected", func(t *testing.T) {
 		fileToStruct(filepath.Join("testdata", "generate_token_response.json"), &expectedResponse)
+		assert.Equal(t, expectedResponse, resp)
+	})
+}
+
+func TestFetchSenderIDSuccess(t *testing.T) {
+	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
+	var (
+		expectedResponse termii.FetchSenderIdResponse
+	)
+
+	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := fmt.Sprintf("/api/sender-id?api_key=%s", termiiTestApiKey)
+			assert.Equal(t, http.MethodGet, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
+		var resp termii.FetchSenderIdResponse
+		fileToStruct(filepath.Join("testdata", "fetch_sender_id_response.json"), &resp)
+
+		w.WriteHeader(http.StatusOK)
+		bb, _ := json.Marshal(resp)
+		w.Write(bb)
+	}))
+	os.Setenv("TERMII_URL", termiiService.URL)
+
+	c := termii.NewClient()
+
+	resp, err := c.FetchSenderID()
+	t.Run("No error is returned", func(t *testing.T) {
+		assert.NoError(t, err)
+	})
+
+	t.Run("Response is as expected", func(t *testing.T) {
+		fileToStruct(filepath.Join("testdata", "fetch_sender_id_response.json"), &expectedResponse)
+		assert.Equal(t, expectedResponse, resp)
+	})
+}
+
+func TestRegisterSenderSuccess(t *testing.T) {
+	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
+	var (
+		expectedTokenRequest termii.RegisterSenderIdRequest
+		receivedBody         termii.RegisterSenderIdRequest
+		req                  termii.RegisterSenderIdRequest
+		expectedResponse     termii.RegisterSenderResponse
+	)
+
+	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if err := json.NewDecoder(req.Body).Decode(&receivedBody); err != nil {
+			log.Printf("error in unmarshalling %+v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sender-id/request"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
+		t.Run("Request is as expected", func(t *testing.T) {
+			fileToStruct(filepath.Join("testdata", "register_sender_request.json"), &expectedTokenRequest)
+			assert.Equal(t, expectedTokenRequest, receivedBody)
+		})
+
+		var resp termii.RegisterSenderResponse
+		fileToStruct(filepath.Join("testdata", "register_sender_response.json"), &resp)
+
+		w.WriteHeader(http.StatusOK)
+		bb, _ := json.Marshal(resp)
+		w.Write(bb)
+	}))
+	os.Setenv("TERMII_URL", termiiService.URL)
+	fileToStruct(filepath.Join("testdata", "register_sender_request.json"), &req)
+
+	c := termii.NewClient()
+
+	resp, err := c.RegisterSender(req)
+	t.Run("No error is returned", func(t *testing.T) {
+		assert.NoError(t, err)
+	})
+
+	t.Run("Response is as expected", func(t *testing.T) {
+		fileToStruct(filepath.Join("testdata", "register_sender_response.json"), &expectedResponse)
 		assert.Equal(t, expectedResponse, resp)
 	})
 }
