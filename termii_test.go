@@ -43,6 +43,12 @@ func TestSendTokenSuccess(t *testing.T) {
 			return
 		}
 
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/send"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "send_token_request.json"), &expectedTokenRequest)
 			assert.Equal(t, expectedTokenRequest, receivedBody)
@@ -86,6 +92,12 @@ func TestVerifyTokenSuccess(t *testing.T) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/verify"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
 
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "verify_token_request.json"), &expectedTokenRequest)
@@ -131,6 +143,12 @@ func TestGetInAppTokenSuccess(t *testing.T) {
 			return
 		}
 
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/sms/otp/generate"
+			assert.Equal(t, http.MethodPost, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
 		t.Run("Request is as expected", func(t *testing.T) {
 			fileToStruct(filepath.Join("testdata", "generate_token_request.json"), &expectedTokenRequest)
 			assert.Equal(t, expectedTokenRequest, receivedBody)
@@ -162,18 +180,18 @@ func TestGetInAppTokenSuccess(t *testing.T) {
 func TestFetchSenderIDSuccess(t *testing.T) {
 	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
 	var (
-		expectedResponse termii.FetchSenderIDResponse
+		expectedResponse termii.FetchSenderIdResponse
 	)
 
 	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 
-		t.Run("URL is as expected", func(t *testing.T) {
+		t.Run("URL and request method is as expected", func(t *testing.T) {
 			expectedURL := fmt.Sprintf("/api/sender-id?api_key=%s", termiiTestApiKey)
-
+			assert.Equal(t, http.MethodGet, req.Method)
 			assert.Equal(t, expectedURL, req.RequestURI)
 		})
 
-		var resp termii.FetchSenderIDResponse
+		var resp termii.FetchSenderIdResponse
 		fileToStruct(filepath.Join("testdata", "fetch_sender_id_response.json"), &resp)
 
 		w.WriteHeader(http.StatusOK)
