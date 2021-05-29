@@ -47,6 +47,31 @@ type RegisterSenderResponse struct {
 	Message string `json:"message"`
 }
 
+// Media is a representation of a media request
+type Media struct {
+	URL     string `json:"url"`
+	Caption string `json:"caption"`
+}
+
+// SendMesageRequest is a representation of a send message request
+type SendMessageRequest struct {
+	To      string `json:"to"`
+	From    string `json:"from"`
+	Sms     string `json:"sms"`
+	Type    string `json:"type"`
+	Channel string `json:"channel"`
+	APIKey  string `json:"api_key"`
+	Media   Media  `json:"media,omitempty"`
+}
+
+// SendMessageResponse is a representation of a send message response
+type SendMessageResponse struct {
+	MessageID string `json:"message_id"`
+	Message   string `json:"message"`
+	Balance   int    `json:"balance"`
+	User      string `json:"user"`
+}
+
 // FetchSenderID allows businesses retrieve the status of all registered sender ID
 func (c Client) FetchSenderID() (FetchSenderIdResponse, error) {
 	rURL := fmt.Sprintf("api/sender-id?api_key=%s", c.config.APIKey)
@@ -66,6 +91,18 @@ func (c Client) RegisterSender(req RegisterSenderIdRequest) (RegisterSenderRespo
 	var Response RegisterSenderResponse
 	if err := c.makeRequest(http.MethodPost, rURL, req, &Response); err != nil {
 		return RegisterSenderResponse{}, errors.Wrap(err, "error in making request to register sender")
+	}
+	return Response, nil
+}
+
+// SendSMS allows a business to send sms. See docs https://developers.termii.com/messaging for more details
+func (c Client) SendSMS(req SendMessageRequest) (SendMessageResponse, error) {
+	rURL := "api/sms/send"
+	req.APIKey = c.config.APIKey
+
+	var Response SendMessageResponse
+	if err := c.makeRequest(http.MethodPost, rURL, req, &Response); err != nil {
+		return SendMessageResponse{}, errors.Wrap(err, "error in making request to send message")
 	}
 	return Response, nil
 }
