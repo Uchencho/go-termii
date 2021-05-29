@@ -67,6 +67,23 @@ type StatusResponse struct {
 	Result []StatusResult `json:"result"`
 }
 
+// HistoryResponse is a representation of a get history response
+type HistoryResponse struct {
+	Sender    string      `json:"sender"`
+	Receiver  string      `json:"receiver"`
+	Message   string      `json:"message"`
+	Amount    int         `json:"amount"`
+	Reroute   int         `json:"reroute"`
+	Status    string      `json:"status"`
+	SmsType   string      `json:"sms_type"`
+	SendBy    string      `json:"send_by"`
+	MediaURL  interface{} `json:"media_url"`
+	MessageID string      `json:"message_id"`
+	NotifyURL interface{} `json:"notify_url"`
+	NotifyID  interface{} `json:"notify_id"`
+	CreatedAt string      `json:"created_at"`
+}
+
 // GetBalance returns total balance and balance information from your wallet, such as currency.
 // See docs https://developers.termii.com/balance for more details
 func (c Client) GetBalance() (GetBalanceResponse, error) {
@@ -101,6 +118,18 @@ func (c Client) GetStatus(req StatusRequest) (StatusResponse, error) {
 	var Response StatusResponse
 	if err := c.makeRequest(http.MethodGet, rURL, req, &Response); err != nil {
 		return StatusResponse{}, errors.Wrap(err, "error in making request to get status")
+	}
+	return Response, nil
+}
+
+// GetHistory returns reports for messages sent across the sms, voice & whatsapp channels.
+// See docs https://developers.termii.com/history for more details
+func (c Client) GetHistory() ([]HistoryResponse, error) {
+	rURL := fmt.Sprintf("api/sms/inbox?api_key=%s", c.config.APIKey)
+
+	var Response []HistoryResponse
+	if err := c.makeRequest(http.MethodGet, rURL, nil, &Response); err != nil {
+		return []HistoryResponse{}, errors.Wrap(err, "error in making request to get history")
 	}
 	return Response, nil
 }

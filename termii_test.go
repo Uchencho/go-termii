@@ -548,3 +548,38 @@ func TestGetStatusSuccess(t *testing.T) {
 		assert.Equal(t, expectedResponse, resp)
 	})
 }
+
+func TestGetHistorySuccess(t *testing.T) {
+	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
+	var (
+		expectedResponse []termii.HistoryResponse
+	)
+
+	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := fmt.Sprintf("/api/sms/inbox?api_key=%s", termiiTestApiKey)
+			assert.Equal(t, http.MethodGet, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
+		var resp []termii.HistoryResponse
+		fileToStruct(filepath.Join("testdata", "get_history_response.json"), &resp)
+
+		w.WriteHeader(http.StatusOK)
+		bb, _ := json.Marshal(resp)
+		w.Write(bb)
+	}))
+	os.Setenv("TERMII_URL", termiiService.URL)
+
+	c := termii.NewClient()
+	resp, err := c.GetHistory()
+	t.Run("No error is returned", func(t *testing.T) {
+		assert.NoError(t, err)
+	})
+
+	t.Run("Response is as expected", func(t *testing.T) {
+		fileToStruct(filepath.Join("testdata", "get_history_response.json"), &expectedResponse)
+		assert.Equal(t, expectedResponse, resp)
+	})
+}

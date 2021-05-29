@@ -1,0 +1,32 @@
+[
+  {
+    "sender": "N-Alert",
+    "receiver": "233257883990",
+    "message": "New year in a bit",
+    "amount": 1,
+    "reroute": 0,
+    "status": "DND Active on Phone Number",
+    "sms_type": "plain",
+    "send_by": "sender",
+    "media_url": "null",
+    "message_id": "5508751839629937023",
+    "notify_url": "null",
+    "notify_id": "null",
+    "created_at": "2020-08-15 12:36:42"
+  },
+  {
+    "sender": "N-Alert",
+    "receiver": "233222883380",
+    "message": "New year in a bit",
+    "amount": 1,
+    "reroute": 0,
+    "status": "DND Active on Phone Number",
+    "sms_type": "plain",
+    "send_by": "sender",
+    "media_url": "",
+    "message_id": "5508755559629937033",
+    "notify_url": "",
+    "notify_id": "",
+    "created_at": "2020-08-15 12:36:42"
+  }
+]
