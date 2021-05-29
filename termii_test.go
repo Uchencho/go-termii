@@ -498,3 +498,53 @@ func TestVerifyNumberSuccess(t *testing.T) {
 		assert.Equal(t, expectedResponse, resp)
 	})
 }
+
+func TestGetStatusSuccess(t *testing.T) {
+	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
+	var (
+		expectedTokenRequest termii.StatusRequest
+		receivedBody         termii.StatusRequest
+		req                  termii.StatusRequest
+		expectedResponse     termii.StatusResponse
+	)
+
+	termiiService := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if err := json.NewDecoder(req.Body).Decode(&receivedBody); err != nil {
+			log.Printf("error in unmarshalling %+v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		t.Run("URL and request method is as expected", func(t *testing.T) {
+			expectedURL := "/api/insight/number/query"
+			assert.Equal(t, http.MethodGet, req.Method)
+			assert.Equal(t, expectedURL, req.RequestURI)
+		})
+
+		t.Run("Request is as expected", func(t *testing.T) {
+			fileToStruct(filepath.Join("testdata", "get_status_request.json"), &expectedTokenRequest)
+			assert.Equal(t, expectedTokenRequest, receivedBody)
+		})
+
+		var resp termii.StatusResponse
+		fileToStruct(filepath.Join("testdata", "get_status_response.json"), &resp)
+
+		w.WriteHeader(http.StatusOK)
+		bb, _ := json.Marshal(resp)
+		w.Write(bb)
+	}))
+	os.Setenv("TERMII_URL", termiiService.URL)
+	fileToStruct(filepath.Join("testdata", "get_status_request.json"), &req)
+
+	c := termii.NewClient()
+
+	resp, err := c.GetStatus(req)
+	t.Run("No error is returned", func(t *testing.T) {
+		assert.NoError(t, err)
+	})
+
+	t.Run("Response is as expected", func(t *testing.T) {
+		fileToStruct(filepath.Join("testdata", "get_status_response.json"), &expectedResponse)
+		assert.Equal(t, expectedResponse, resp)
+	})
+}

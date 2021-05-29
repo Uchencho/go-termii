@@ -1,0 +1,24 @@
+{
+  "result": [
+    {
+      "routeDetail": {
+        "number": "2348753243651",
+        "ported": 0
+      },
+      "countryDetail": {
+        "countryCode": "234",
+        "mobileCountryCode": "621",
+        "iso": "NG"
+      },
+      "operatorDetail": {
+        "operatorCode": "ANG",
+        "operatorName": "Airtel Nigeria",
+        "mobileNumberCode": "20",
+        "mobileRoutingCode": "41",
+        "carrierIdentificationCode": "23433",
+        "lineType": "Mobile"
+      },
+      "status": 200
+    }
+  ]
+}

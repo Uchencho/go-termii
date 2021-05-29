@@ -28,6 +28,45 @@ type VerifyNumberResponse struct {
 	NetworkCode string `json:"network_code"`
 }
 
+// StatusRequest is a representation of a status request
+type StatusRequest struct {
+	APIKey      string `json:"api_key"`
+	PhoneNumber string `json:"phone_number"`
+	CountryCode string `json:"country_code"`
+}
+
+type RouteDetail struct {
+	Number string `json:"number"`
+	Ported int    `json:"ported"`
+}
+
+type CountryDetail struct {
+	CountryCode       string `json:"countryCode"`
+	MobileCountryCode string `json:"mobileCountryCode"`
+	Iso               string `json:"iso"`
+}
+
+type OperatorDetail struct {
+	OperatorCode              string `json:"operatorCode"`
+	OperatorName              string `json:"operatorName"`
+	MobileNumberCode          string `json:"mobileNumberCode"`
+	MobileRoutingCode         string `json:"mobileRoutingCode"`
+	CarrierIdentificationCode string `json:"carrierIdentificationCode"`
+	LineType                  string `json:"lineType"`
+}
+
+type StatusResult struct {
+	RouteDetail    RouteDetail    `json:"routeDetail"`
+	CountryDetail  CountryDetail  `json:"countryDetail"`
+	OperatorDetail OperatorDetail `json:"operatorDetail"`
+	Status         int            `json:"status"`
+}
+
+// StatusResponse is a representation of a status response
+type StatusResponse struct {
+	Result []StatusResult `json:"result"`
+}
+
 // GetBalance returns total balance and balance information from your wallet, such as currency.
 // See docs https://developers.termii.com/balance for more details
 func (c Client) GetBalance() (GetBalanceResponse, error) {
@@ -49,6 +88,19 @@ func (c Client) VerifyNumber(req VerifyNumberRequest) (VerifyNumberResponse, err
 	var Response VerifyNumberResponse
 	if err := c.makeRequest(http.MethodGet, rURL, req, &Response); err != nil {
 		return VerifyNumberResponse{}, errors.Wrap(err, "error in making request to verify number")
+	}
+	return Response, nil
+}
+
+// GetStatus allows businesses to detect if a number is fake or has ported to a new network.
+// See docs https://developers.termii.com/status for more details
+func (c Client) GetStatus(req StatusRequest) (StatusResponse, error) {
+	rURL := "api/insight/number/query"
+	req.APIKey = c.config.APIKey
+
+	var Response StatusResponse
+	if err := c.makeRequest(http.MethodGet, rURL, req, &Response); err != nil {
+		return StatusResponse{}, errors.Wrap(err, "error in making request to get status")
 	}
 	return Response, nil
 }
