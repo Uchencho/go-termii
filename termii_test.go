@@ -19,6 +19,7 @@ import (
 
 const (
 	termiiTestApiKey = "test-API"
+	termiiSenderID   = "Acme"
 )
 
 func fileToStruct(filepath string, s interface{}) io.Reader {
@@ -215,6 +216,7 @@ func TestFetchSenderIDSuccess(t *testing.T) {
 
 func TestRegisterSenderSuccess(t *testing.T) {
 	os.Setenv("TERMII_API_KEY", termiiTestApiKey)
+	os.Setenv("TERMII_SENDER_ID", termiiSenderID)
 	var (
 		expectedTokenRequest termii.RegisterSenderIdRequest
 		receivedBody         termii.RegisterSenderIdRequest

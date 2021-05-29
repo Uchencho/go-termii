@@ -130,6 +130,7 @@ func (c Client) FetchSenderID() (FetchSenderIdResponse, error) {
 func (c Client) RegisterSender(req RegisterSenderIdRequest) (RegisterSenderResponse, error) {
 	rURL := "api/sender-id/request"
 	req.APIKey = c.config.APIKey
+	req.SenderID = c.config.SenderID
 
 	var Response RegisterSenderResponse
 	if err := c.makeRequest(http.MethodPost, rURL, req, &Response); err != nil {
