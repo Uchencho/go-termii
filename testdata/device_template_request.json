@@ -1,0 +1,11 @@
+{
+  "phone_number": "2347880234567",
+  "device_id": "talert",
+  "template_id": "1493-csdn3-ns34w-sd3434-dfdf",
+  "api_key": "test-API",
+  "data": {
+    "product_name": "Termii",
+    "otp": 120435,
+    "expiry_time": "10 minutes"
+  }
+}
