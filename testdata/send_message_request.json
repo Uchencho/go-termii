@@ -1,0 +1,12 @@
+{
+  "to": "2347880234567",
+  "from": "talert",
+  "sms": "Hi there, testing Termii",
+  "type": "plain",
+  "channel": "generic",
+  "api_key": "test-API",
+  "media": {
+    "url": "https://media.example.com/file",
+    "caption": "your media file"
+  }
+}

@@ -73,6 +73,7 @@ type SendMessageResponse struct {
 }
 
 // FetchSenderID allows businesses retrieve the status of all registered sender ID
+// See docs https://developers.termii.com/sender-id#fetch-sender-id for more details
 func (c Client) FetchSenderID() (FetchSenderIdResponse, error) {
 	rURL := fmt.Sprintf("api/sender-id?api_key=%s", c.config.APIKey)
 
@@ -83,7 +84,8 @@ func (c Client) FetchSenderID() (FetchSenderIdResponse, error) {
 	return Response, nil
 }
 
-// RegisterSender allows businesses register a sender
+// RegisterSender allows businesses register a sender.
+// See docs https://developers.termii.com/sender-id#request-sender-id for more details
 func (c Client) RegisterSender(req RegisterSenderIdRequest) (RegisterSenderResponse, error) {
 	rURL := "api/sender-id/request"
 	req.APIKey = c.config.APIKey
@@ -96,7 +98,7 @@ func (c Client) RegisterSender(req RegisterSenderIdRequest) (RegisterSenderRespo
 }
 
 // SendSMS allows a business to send sms. See docs https://developers.termii.com/messaging for more details
-func (c Client) SendSMS(req SendMessageRequest) (SendMessageResponse, error) {
+func (c Client) SendMessage(req SendMessageRequest) (SendMessageResponse, error) {
 	rURL := "api/sms/send"
 	req.APIKey = c.config.APIKey
 
