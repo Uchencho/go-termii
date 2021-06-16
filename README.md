@@ -48,4 +48,4 @@ func main() {
 ```
 
 > **NOTE**
-> Check the `client` directory to see a sample implementation and termii_test.go file to see tests
+> Check the `client` directory to see a sample implementation and termii_test.go file to see sample tests
