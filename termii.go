@@ -34,7 +34,7 @@ func ConfigFromEnvVars() Config {
 	}
 }
 
-// NewClient creates a termii client using config variables
+// NewClient creates a termii client using configuration variables
 func NewClient() Client {
 	return Client{config: ConfigFromEnvVars(), client: &http.Client{Timeout: 30 * time.Second}}
 }
