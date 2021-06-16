@@ -1,8 +1,9 @@
 package main
 
 import (
-	termii "go-termii"
 	"log"
+
+	termii "github.com/Uchencho/go-termii"
 )
 
 func main() {

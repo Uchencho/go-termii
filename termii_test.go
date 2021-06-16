@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	termii "go-termii"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,6 +12,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	termii "github.com/Uchencho/go-termii"
 
 	"github.com/stretchr/testify/assert"
 )
