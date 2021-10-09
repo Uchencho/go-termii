@@ -40,9 +40,9 @@ type GenerateTokenRequest struct {
 
 // VerifyTokenResponse is a representation of a verify token response
 type VerifyTokenResponse struct {
-	PinID    string `json:"pinId"`
-	Verified string `json:"verified"`
-	Msisdn   string `json:"msisdn"`
+	PinID    string      `json:"pinId"`
+	Verified interface{} `json:"verified"`
+	Msisdn   string      `json:"msisdn"`
 }
 
 // SendTokenResponse is a representation of a send token response
@@ -90,7 +90,7 @@ func (c Client) VerifyToken(req VerifyTokenRequest) (VerifyTokenResponse, error)
 	return tokenResponse, nil
 }
 
-// VerifyToken sends a request to verify token
+// GetInAppToken sends a request to get in app token
 func (c Client) GetInAppToken(req GenerateTokenRequest) (GenerateTokenResponse, error) {
 	req.APIKey = c.config.APIKey
 	rURL := "api/sms/otp/generate"
