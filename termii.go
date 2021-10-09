@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -61,7 +62,11 @@ func (s *Client) makeRequest(method, rURL string, reqBody interface{}, resp inte
 	}
 
 	if res.StatusCode != http.StatusOK && res.StatusCode != 204 {
-		return errors.Errorf("invalid status code received, expected 200/204, got %v", res.StatusCode)
+		messageBytes, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return errors.Errorf( "invalid status code received, expected 200/204, got %v", res.StatusCode)
+		}
+		return errors.Errorf("invalid status code received, expected 200/204, got %v , message : (%v)", res.StatusCode, string(messageBytes))
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
