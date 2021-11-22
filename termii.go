@@ -65,7 +65,7 @@ func (s *Client) makeRequest(method, rURL string, reqBody interface{}, resp inte
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
-		return errors.Wrap(err, "unable to unmarshal request body")
+		return errors.Wrap(err, "unable to unmarshal response body")
 	}
 	return nil
 }
