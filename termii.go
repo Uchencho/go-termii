@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -25,18 +24,15 @@ type Client struct {
 	client *http.Client
 }
 
-// ConfigFromEnvVars provides the default config from env vars for termii
-func ConfigFromEnvVars() Config {
-	return Config{
-		APIKey:   os.Getenv("TERMII_API_KEY"),
-		BaseURL:  os.Getenv("TERMII_URL"),
-		SenderID: os.Getenv("TERMII_SENDER_ID"),
-	}
-}
-
 // NewClient creates a termii client using configuration variables
-func NewClient() Client {
-	return Client{config: ConfigFromEnvVars(), client: &http.Client{Timeout: 30 * time.Second}}
+func NewClient(apiKey, baseUrl, senderID string) Client {
+	return Client{config: Config{
+		APIKey:   apiKey,
+		BaseURL:  baseUrl,
+		SenderID: senderID,
+	},
+		client: &http.Client{Timeout: 30 * time.Second},
+	}
 }
 
 func (s *Client) makeRequest(method, rURL string, reqBody interface{}, resp interface{}) error {
