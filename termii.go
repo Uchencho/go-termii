@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/pkg/errors"
 )
@@ -25,13 +24,14 @@ type Client struct {
 }
 
 // NewClient creates a termii client using configuration variables
-func NewClient(apiKey, baseUrl, senderID string) Client {
-	return Client{config: Config{
-		APIKey:   apiKey,
-		BaseURL:  baseUrl,
-		SenderID: senderID,
-	},
-		client: &http.Client{Timeout: 30 * time.Second},
+func NewClient(c Config, h *http.Client) Client {
+	return Client{
+		config: Config{
+			APIKey:   c.APIKey,
+			BaseURL:  c.BaseURL,
+			SenderID: c.SenderID,
+		},
+		client: h,
 	}
 }
 
