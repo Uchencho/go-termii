@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -60,11 +62,20 @@ func (s *Client) makeRequest(method, rURL string, reqBody interface{}, resp inte
 		return errors.Wrap(err, "client - failed to execute request")
 	}
 
-	if res.StatusCode != http.StatusOK && res.StatusCode != 204 {
-		return errors.Errorf("invalid status code received, expected 200/204, got %v", res.StatusCode)
+	var bb []byte
+	if res != nil {
+		bb, _ = ioutil.ReadAll(res.Body)
+	}
+	if os.Getenv("DEBUG_LOGS") == "true" {
+		log.Printf("got response %s", string(bb))
 	}
 
-	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent && res.StatusCode != http.StatusCreated {
+		return errors.Errorf("invalid status code received, expected 200/201/204, got %v, url=%s, with response body=%s",
+			res.StatusCode, URL, bb)
+	}
+
+	if err := json.Unmarshal(bb, &resp); err != nil {
 		return errors.Wrap(err, "unable to unmarshal response body")
 	}
 	return nil
