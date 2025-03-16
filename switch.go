@@ -1,6 +1,7 @@
 package gotermii
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -82,10 +83,10 @@ type SendMessageRequest struct {
 
 // SendMessageResponse is a representation of a send message response
 type SendMessageResponse struct {
-	MessageID string `json:"message_id"`
-	Message   string `json:"message"`
-	Balance   int    `json:"balance"`
-	User      string `json:"user"`
+	MessageID string      `json:"message_id"`
+	Message   string      `json:"message"`
+	Balance   json.Number `json:"balance"`
+	User      string      `json:"user"`
 }
 
 // TemplateData is a representation of a template data
