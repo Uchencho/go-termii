@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	termii "github.com/Uchencho/go-termii"
+	termii "github.com/joshuachinemezu/go-termii"
 )
 
 func main() {

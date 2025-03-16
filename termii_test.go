@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	termii "github.com/Uchencho/go-termii"
+	termii "github.com/joshuachinemezu/go-termii"
 
 	"github.com/stretchr/testify/assert"
 )

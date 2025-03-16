@@ -1,4 +1,4 @@
-module github.com/Uchencho/go-termii
+module github.com/joshuachinemezu/go-termii
 
 go 1.15
 
